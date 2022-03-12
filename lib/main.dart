@@ -99,6 +99,8 @@ class HomePage extends StatelessWidget {
                   GuestBook(
                     addMessage: (message) =>
                         appState.addMessageToGuestBook(message),
+                    deleteMessage: (id) =>
+                        appState.deleteMessageToGuestBook(id),
                     messages: appState.guestBookMessages, // new
                   ),
                 ],
@@ -262,6 +264,16 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  void deleteMessageToGuestBook(String id) {
+    if (_loginState != ApplicationLoginState.loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    FirebaseFirestore.instance
+        .collection('guestbook')
+        .doc(id).delete();
+  }
+
   int _attendees = 0;
   int get attendees => _attendees;
 
@@ -281,8 +293,9 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBook extends StatefulWidget {
-  const GuestBook({required this.addMessage, required this.messages});
+  const GuestBook({required this.addMessage,required this.deleteMessage, required this.messages});
   final FutureOr<void> Function(String message) addMessage;
+  final FutureOr<void> Function(String message) deleteMessage;
   final List<GuestBookMessage> messages; // new
 
   @override
@@ -349,6 +362,9 @@ class _GuestBookState extends State<GuestBook> {
               ),
               const SizedBox(width: 8),
               StyledButton(
+                onPressed: () async {
+                  await widget.deleteMessage(message.id);
+                },
                 child: Row(
                   children: const [
                     Icon(Icons.delete),
