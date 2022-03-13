@@ -349,6 +349,7 @@ class _GuestBookState extends State<GuestBook> {
               ),
               const SizedBox(width: 8),
               StyledButton(
+                onPressed: (){},
                 child: Row(
                   children: const [
                     Icon(Icons.delete),
@@ -364,11 +365,9 @@ class _GuestBookState extends State<GuestBook> {
   }
 }
 class GuestBookMessage {
-  GuestBookMessage({required this.id, required this.name, required this.message, required this.uid});
-  final String id;
+  GuestBookMessage({required this.name, required this.message});
   final String name;
   final String message;
-  final String uid;
 }
 
 class YesNoSelection extends StatelessWidget {
